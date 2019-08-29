@@ -1,0 +1,2 @@
+# 配置自动注入的类
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.bootstarter.StarterAutoConfigure
