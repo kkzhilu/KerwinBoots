@@ -68,19 +68,19 @@
             <version>5.1.43</version>
         </dependency>
 
-        <!-- druid数据源 -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>1.1.17</version>
-        </dependency>
+        <!--&lt;!&ndash; druid数据源 &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>com.alibaba</groupId>-->
+            <!--<artifactId>druid</artifactId>-->
+            <!--<version>1.1.17</version>-->
+        <!--</dependency>-->
 
-        <!-- druid starter -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.1.9</version>
-        </dependency>
+        <!--&lt;!&ndash; druid starter &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>com.alibaba</groupId>-->
+            <!--<artifactId>druid-spring-boot-starter</artifactId>-->
+            <!--<version>1.1.9</version>-->
+        <!--</dependency>-->
 
         <!-- commons-lang3 -->
         <dependency>
