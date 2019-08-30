@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cat.dao.ProScoreMapper">
+
+    <select id="getCount" parameterType="ProScore" resultType="java.lang.Long">
+        select count(id) from pro_score where 1 = 1
+        <if test="pro.year != null">
+            and year = #{pro.year}
+        </if>
+
+        <if test="pro.province != null">
+            and province = #{pro.province}
+        </if>
+
+        <if test="pro.type != null">
+            and type = #{pro.type}
+        </if>
+
+        <if test="pro.rank != null">
+            and rank  like CONCAT('%',#{pro.rank},'%')
+        </if>
+
+        <if test="pro.score != null">
+            and score &gt; (#{pro.score} - 20) and score &lt; (#{pro.score}  + 20 )
+        </if>
+    </select>
+
+    <select id="findBy" parameterType="ProScore" resultType="ProScore">
+        select * from pro_score where 1 = 1
+        <if test="pro.year != null">
+            and year = #{pro.year}
+        </if>
+
+        <if test="pro.province != null">
+            and province = #{pro.province}
+        </if>
+
+        <if test="pro.type != null">
+            and type = #{pro.type}
+        </if>
+
+        <if test="pro.rank != null">
+            and rank  like CONCAT('%',#{pro.rank},'%')
+        </if>
+
+        <if test="pro.score != null">
+            and score &gt; (#{pro.score} - 20) and score &lt; (#{pro.score}  + 20 ) order by score desc
+        </if>
+
+        <if test="pro.page != null">
+            limit #{pro.offLeft}, #{pro.offRight}
+        </if>
+    </select>
+
+</mapper>

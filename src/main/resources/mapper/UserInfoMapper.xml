@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cat.dao.UserInfoMapper">
+
+    <update id="update" parameterType="UserInfo">
+        update user_info
+        <trim prefix="set" suffixOverrides=",">
+
+            <if test = "user.userScore != null">
+                userScore = #{user.userScore},
+            </if>
+
+            <if test = "user.userProvince != null">
+                userProvince = #{user.userProvince},
+            </if>
+
+            <if test = "user.userGoal != null">
+                userGoal = #{user.userGoal},
+            </if>
+
+            <if test = "user.userContent != null">
+                userContent = #{user.userContent},
+            </if>
+
+            <if test = "user.by1 != null">
+                by1 = #{user.by1},
+            </if>
+
+            <if test = "user.by2 != null">
+                by2 = #{user.by2},
+            </if>
+        </trim>
+        where uuid = #{user.uuid}
+    </update>
+
+</mapper>
