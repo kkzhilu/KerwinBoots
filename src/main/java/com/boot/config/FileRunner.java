@@ -26,34 +26,6 @@ public class FileRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        // 根JSON
-        JSONObject rootJson = new JSONObject();
 
-        File rootFile = new File(filePath);
-    }
-
-    /***
-     * 读取指定目录文件 构建树形结构
-     * @param file     指定文件目录
-     * @param array    JSONArray
-     * @return         JSONArray
-     */
-    private JSONArray getAllFiles (File file, JSONArray array) {
-        File[] files = file.listFiles();
-        for (File current : files) {
-            if (current.isDirectory()) {
-                JSONObject json = new JSONObject();
-                json.put("uuid", UUID.randomUUID());
-                json.put("label", current.getName());
-                json.put("children", getAllFiles(current, new JSONArray()));
-                array.add(json);
-            } else {
-                JSONObject json = new JSONObject();
-                json.put("uuid", UUID.randomUUID());
-                json.put("label", current.getName());
-                array.add(json);
-            }
-        }
-        return array;
     }
 }
