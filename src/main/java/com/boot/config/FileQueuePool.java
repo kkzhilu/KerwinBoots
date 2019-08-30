@@ -2,12 +2,12 @@ package com.boot.config;
 
 import com.boot.pojo.CodeFile;
 import com.boot.service.CodeFileImpl;
+import com.boot.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -24,7 +24,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class FileQueuePool {
 
     @Autowired
-    CodeFileImpl codeFile;
+    CodeFileImpl codeFileImpl;
 
     private static Logger logger = LoggerFactory.getLogger(FileQueuePool.class);
 
@@ -33,6 +33,8 @@ public class FileQueuePool {
 
     /** 线程池 **/
     private ExecutorService service;
+
+    public FileQueuePool () { init(); }
 
     private void init () {
         blockingQueue = new LinkedBlockingQueue<>();
@@ -44,12 +46,17 @@ public class FileQueuePool {
             public void run() {
                 while (true) {
                     try {
+                        // 获取队列任务
                         CodeFile codeFile = getBlockingQueue().take();
+                        logger.info("get task from queue: file name is -> {}, path is -> {}", codeFile.getFileName(), codeFile.getPath());
 
+                        // 读取文件内容
+                        String fileContent = FileUtils.getFileContent(codeFile.getPath());
+                        codeFile.setContent(fileContent);
 
-
-
-                    } catch (InterruptedException e) {
+                        // 插入到SQL中
+                        boolean result = codeFileImpl.insert(codeFile);
+                    } catch (Exception e) {
                         logger.error(e.getMessage(), new Throwable(e));
                     }
                 }

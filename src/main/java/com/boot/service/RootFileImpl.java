@@ -6,7 +6,9 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ******************************
@@ -32,5 +34,16 @@ public class RootFileImpl {
 
     public List<RootFile> getRootFiles () {
         return rootFileDao.getRootFiles();
+    }
+
+    public Map<String, RootFile> getFilesByMap () {
+        Map<String, RootFile> result = new HashMap<>();
+        List<RootFile> fileList = rootFileDao.getRootFiles();
+        for (RootFile rootFile : fileList) {
+            if (!result.containsKey(rootFile.getFileName())) {
+                result.put(rootFile.getFileName(), rootFile);
+            }
+        }
+        return result;
     }
 }

@@ -2,6 +2,10 @@ package com.boot.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.boot.config.FileQueuePool;
+import com.boot.pojo.CodeFile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,12 +21,21 @@ import java.util.UUID;
  * version:      V1.0
  * ******************************
  */
+@Component
 public class FileUtils {
+
+    // 注入到static 对象中
+    private static FileQueuePool fileQueuePool;
+
+    @Autowired
+    public void setFileQueuePool (FileQueuePool fileQueuePool) {
+        FileUtils.fileQueuePool = fileQueuePool;
+    }
 
     /**
      * 获取文件内容
      */
-    private static String getFileContent (String filePath) throws IOException {
+    public static String getFileContent (String filePath) throws IOException {
         BufferedReader buf = new BufferedReader(new FileReader(filePath));
         StringBuilder sbuf = new StringBuilder();
         String line;
@@ -46,7 +59,7 @@ public class FileUtils {
      * @param array    JSONArray
      * @return         JSONArray
      */
-    private static JSONArray getAllFiles (File file, JSONArray array) {
+    public static JSONArray getAllFiles (File file, JSONArray array) {
         File[] files = file.listFiles();
         for (File current : files) {
             if (current.isDirectory()) {
@@ -59,6 +72,15 @@ public class FileUtils {
                 JSONObject json = new JSONObject();
                 json.put("uuid", UUID.randomUUID());
                 json.put("label", current.getName());
+
+                CodeFile codeFile = new CodeFile();
+                codeFile.setUuid(json.getString("uuid"));
+                codeFile.setFileName(json.getString("label"));
+                codeFile.setPath(current.getAbsolutePath());
+                codeFile.setFileType(current.getName().endsWith("java") ? "java" : "other");
+
+                // 加入到任务队列中 - 读取文件内容
+                fileQueuePool.getBlockingQueue().offer(codeFile);
                 array.add(json);
             }
         }
