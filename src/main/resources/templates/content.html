@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8"/>
+	<title>Content</title>
+</head>
+
+<!-- import Vue before Element -->
+<script src="../static/js/Vue.js"          th:src="@{js/Vue.js}"></script>
+<script src="../static/element/index.js"   th:src="@{element/index.js}" type="text/javascript" charset="utf-8"></script>
+<script src="../static/js/jquery-3.2.1.js" th:src="@{js/jquery-3.2.1.js}" type="text/javascript" charset="utf-8"></script>
+<script src="../static/highlight/highlight.pack.js" th:src="@{highlight/highlight.pack.js}" type="text/javascript" charset="utf-8"></script>
+<!-- import CSS -->
+<link rel="stylesheet" href="../static/element/index.css" th:href="@{element/index.css}" />
+<link rel="stylesheet" href="../static/highlight/styles/atom-one-dark.css" th:href="@{highlight/styles/atom-one-dark.css}" type="text/css"/>
+
+<body>
+	<div id="app">
+		<el-container style="height: 500px; border: 1px solid #eee">
+			<el-aside width="auto" style="background-color: rgb(238, 241, 246)">
+				<!-- tree -->
+				<el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+			</el-aside>
+
+			<el-container>
+				<el-main>
+					<pre>
+						<code class="java" id="mycode" th:text="${code}">
+						</code>
+					</pre>
+				</el-main>
+			</el-container>
+		</el-container>
+	</div>
+</body>
+<script th:inline="javascript">
+	// 初始化JS
+	hljs.initHighlightingOnLoad();
+
+	// treeJson
+	var jsonArr = [[${tree}]];
+	var Main = {
+		data() {
+			return {
+				treeData: eval('(' + jsonArr + ')'),
+				defaultProps: {
+					children: 'children',
+					label: 'label'
+				}
+			}
+		},
+		methods: {
+			handleNodeClick(data) {
+				console.log(data.uuid);
+			}
+		}
+	};
+	var Ctor = Vue.extend(Main)
+	new Ctor().$mount('#app')
+</script>
+</html>

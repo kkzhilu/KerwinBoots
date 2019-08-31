@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>显示数据</title>
+    <!--<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />-->
+    <meta charset="UTF-8"/>
+</head>
+<body>
+<table border="1px">
+    <tr>
+        <th>id</th>
+        <th>name</th>
+    </tr>
+    <tr th:each="l:${page.list}">
+        <td th:text="${l.id}"></td>
+        <td th:text="${l.name}"></td>
+    </tr>
+</table>
+<a th:href="@{/listCategory.html(start=0)}">[首  页]</a>
+<a th:href="@{/listCategory.html(start=${page.pageNum-1})}">[上一页]</a>
+<a th:href="@{/listCategory.html(start=${page.pageNum+1})}">[下一页]</a>
+<a th:href="@{/listCategory.html(start=${page.pages})}">[末  页]</a>
+<br/>
+<!-- 这种写法ok，即加上根目录  <form action="/thymeleaf/addCategory">-->
+<!--综上所述，/addCategory不能实现的原因是由于/返回到上一级的根目录，因此这一点需要注意-->
+<form action="addCategory">
+    <p>添加元素数据</p>
+    <input type="text" name="name" value="" />
+    <input type="submit" value="提交" />
+</form>
+</body>
+</html>
