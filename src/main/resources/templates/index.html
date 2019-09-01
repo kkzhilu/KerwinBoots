@@ -1,148 +1,77 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title></title>
-	</head>
-	<link rel="stylesheet" type="text/css" href="../static/highlight/styles/atom-one-dark.css"/>
-	<body>
-		<pre>
-			<code class="java">
-package leecode;
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8"/>
+	<title>File Code</title>
+</head>
 
-import java.util.HashMap;
+<!-- import Vue before Element -->
+<script src="../static/js/Vue.js"          th:src="@{js/Vue.js}"></script>
+<script src="../static/element/index.js"   th:src="@{element/index.js}" type="text/javascript" charset="utf-8"></script>
+<script src="../static/js/jquery-3.2.1.js" th:src="@{js/jquery-3.2.1.js}" type="text/javascript" charset="utf-8"></script>
+<script src="../static/highlight/highlight.pack.js" th:src="@{highlight/highlight.pack.js}" type="text/javascript" charset="utf-8"></script>
+<!-- import CSS -->
+<link rel="stylesheet" href="../static/element/index.css" th:href="@{element/index.css}" />
+<link rel="stylesheet" href="../static/highlight/styles/atom-one-dark.css" th:href="@{highlight/styles/atom-one-dark.css}" type="text/css"/>
+<body>
+	<div id="app">
+		<el-container style="height: 800px; border: 2px solid #eee;">
+			<el-aside width="450px">
+				<!-- tree -->
+				<el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+			</el-aside>
 
-/**
- * ******************************
- *
- * @author： 柯贤铭
- * @createTime: 2019/3/26 9:40
- * @description: 超级无敌强的动态规划算法，备忘录算法
- * @version: V1.0
- * ******************************
- */
-public class DynamicPlanning {
+			<el-container>
+				<el-main>
+					<pre>
+<code id="mycode">
+// 请选择左侧文件查看~
+</code>
+					</pre>
+				</el-main>
+			</el-container>
+		</el-container>
+	</div>
+</body>
+<script th:inline="javascript">
+	// treeJson
+	var jsonArr = [[${tree}]];
+	var Main = {
+		data() {
+			return {
+				treeData: eval('(' + jsonArr + ')'),
+				defaultProps: {
+					children: 'children',
+					label: 'label'
+				}
+			}
+		},
+		methods: {
+			handleNodeClick(data) {
+			    if (data.uuid.search("@") !== -1 ) {
+					return;
+				}
 
-    public static void main(String[] args){
-        int num = 120;
-
-        System.out.println("*************** 递归算法 50层以上时，计算相当缓慢 需要至少一分钟以上 ***************");
-        if (num < 40) {
-            Long start = System.currentTimeMillis();
-            System.out.println(goFlow(num));
-            Long end   = System.currentTimeMillis();
-            System.out.println(num + " 台阶计算耗时: " + (end - start) + " ms");
-        }
-
-        System.out.println("*************** 备忘录算法 ***************");
-        Long start1 = System.currentTimeMillis();
-        System.out.println(goFlowByMap(num, null));
-        Long end1   = System.currentTimeMillis();
-        System.out.println(num + " 台阶计算耗时: " + (end1 - start1) + " ms");
-
-        System.out.println("*************** 动态规划算法 ***************");
-        Long start2 = System.currentTimeMillis();
-        System.out.println(goFlowByDP(num));
-        Long end2   = System.currentTimeMillis();
-        System.out.println(num + " 台阶计算耗时: " + (end2 - start2) + " ms");
-
-        System.out.println("*************** 动态规划算法之硬币问题 ***************");
-        Long start3 = System.currentTimeMillis();
-        System.out.println(dpMethod(num));
-        Long end3   = System.currentTimeMillis();
-        System.out.println(num + " 元，需要最少硬币计算耗时: " + (end2 - start2) + " ms");
-    }
-
-    /***
-     * 动态规划算法解决1，3，5硬币问题  11元硬币，最少需要几块硬币构成
-     * 链接：http://www.hawstein.com/posts/dp-novice-to-advanced.html 入门级别
-     */
-    static int dpMethod (int num) {
-        // money数组
-        int[] money = {1,3,5};
-        // 数据集
-        int[] temp = new int[num + 1];
-        for (int i = 0; i < temp.length ; i++) {
-            // 0,1,2,3----8,9...，初始化最大的i值
-            int tarMoney = i ;
-            for (int j = 0; j < money.length; j++) {
-                // 如果目标钱数较大，则有必要进行状态转移方程
-                if (i >= money[j]) {
-                    int min = temp[i - money[j]] + 1;
-                    if (min < tarMoney) {
-                        tarMoney = min;
+                $.ajax({
+                    type : "POST",
+                    url : "/code/content",
+                    data : {uuid:data.uuid},
+                    dataType: 'html',
+                    success : function(result) {
+                        var highCode = hljs.highlightAuto(result).value;
+                        $('#mycode').html(highCode);
+                    },
+                    error : function(e){
+                        alert("some things is error.");
                     }
-                }
-            }
-            temp[i] = tarMoney;
-        }
-        return temp[num];
-    }
+                });
+			}
+		}
+	};
 
-    /***
-     * 递归算法
-     * 走楼梯问题,一次只能走一步或者走两步，问走n楼,一共多少种走法
-     */
-    static int goFlow (int num) {
-        if (num < 3) {
-            return num;
-        }
-        return goFlow(num - 1) + goFlow(num - 2);
-    }
+	var Ctor = Vue.extend(Main)
+	new Ctor().$mount('#app')
 
-    /***
-     * 备忘录算法-存取值
-     * 如本题中的关键逻辑在于: d(i) = d(i-1) + d(i-2),所以一种简单方式是存取相关的n-value值
-     * 走楼梯问题,一次只能走一步或者走两步，问走n楼,一共多少种走法
-     */
-    static int goFlowByMap (int num, HashMap<Integer,Integer> map) {
-        if (num < 3) {
-            return num;
-        }
 
-        if (map == null) {
-            map = new HashMap<>();
-        }
-
-        if (map.containsKey(num)) {
-            return map.get(num);
-        } else {
-            int value = goFlowByMap(num - 1, map) + goFlowByMap(num -2, map);
-            map.put(num, value);
-            return value;
-        }
-    }
-
-    /***
-     * 动态规划算法 - 关键点有两个，一个是找出一个数据变化的i，n关系，另一个是用代码实现这种i，n关系
-     * 如本题中的关键逻辑在于: d(i) = d(i-1) + d(i-2),所以动态的存取这两个值即可
-     * 走楼梯问题,一次只能走一步或者走两步，问走n楼,一共多少种走法
-     */
-    static int goFlowByDP (int num) {
-        if (num < 3) {
-            return num;
-        }
-
-        int a = 1;
-        int b = 2;
-        int temp = 0;
-
-        for (int i = 3; i <= num; i++) {
-            temp = a + b;
-            a = b;
-            b = temp;
-        }
-
-        return temp;
-    }
-}
-				
-			</code>
-		</pre>
-	</body>
+</script>
 </html>
-<script src="../static/js/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
-<script src="../static/highlight/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
-<script> 
-	  hljs.initHighlightingOnLoad();
-</script> 

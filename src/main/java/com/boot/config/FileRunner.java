@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -41,7 +42,7 @@ public class FileRunner implements CommandLineRunner {
             File file = new File(filePath);
             if (file.isDirectory() && file.exists()) {
                 File[] files = file.listFiles();
-                for (File current : files) {
+                for (File current : Objects.requireNonNull(files)) {
                     // 如果不包含该工程则开始录入
                     if (!result.containsKey(current.getName())) {
                         RootFile rootFile = new RootFile();

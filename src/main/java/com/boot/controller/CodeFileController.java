@@ -1,5 +1,6 @@
 package com.boot.controller;
 
+import com.boot.pojo.CodeFile;
 import com.boot.pojo.RootFile;
 import com.boot.service.CodeFileImpl;
 import com.boot.service.RootFileImpl;
@@ -8,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * ******************************
@@ -26,13 +28,28 @@ public class CodeFileController {
     @Resource
     CodeFileImpl codeFileImpl;
 
-    @RequestMapping("/content")
-    public String content(Model model) {
-        RootFile rootFile = rootFileImpl.get("4891007c-de49-4ee6-84d5-d69fa26da2b9");
+    @RequestMapping("/*")
+    public String list(Model model) {
+        List<RootFile> list = rootFileImpl.getRootFiles();
+        model.addAttribute("list", list);
+        return "listCategory";
+    }
 
-
+    @RequestMapping("/index")
+    public String index(Model model, String uuid) {
+        RootFile rootFile = rootFileImpl.get(uuid);
         model.addAttribute("tree", rootFile.getContent());
-        model.addAttribute("code", codeFileImpl.get("03f9e09e-a256-42ce-a0a2-61068e93c842").getContent());
+        return "index";
+    }
+
+    @RequestMapping("/content")
+    public String codeFile(Model model, String uuid) {
+        CodeFile codeFile = codeFileImpl.get(uuid);
+        if (codeFile != null) {
+            model.addAttribute("content", codeFile.getContent());
+        } else {
+            model.addAttribute("content", "选择文件查看");
+        }
         return "content";
     }
 }

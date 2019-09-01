@@ -64,7 +64,9 @@ public class FileUtils {
         for (File current : files) {
             if (current.isDirectory()) {
                 JSONObject json = new JSONObject();
-                json.put("uuid", UUID.randomUUID());
+
+                // 目录结构uuid 统一前缀为 dire@
+                json.put("uuid", "dire@" + UUID.randomUUID());
                 json.put("label", current.getName());
                 json.put("children", getAllFiles(current, new JSONArray()));
                 array.add(json);
