@@ -1,5 +1,8 @@
 package com.boot.service;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
+
 /**
  * ******************************
  * author：      柯贤铭
@@ -14,4 +17,8 @@ public interface AsyncService {
      * 执行方法
      */
     void excecute() throws InterruptedException;
+
+    Future<String> excecuteForValue (CountDownLatch countDownLatch) throws InterruptedException;
+
+    void testThreads ();
 }
