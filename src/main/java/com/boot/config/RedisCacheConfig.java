@@ -60,7 +60,7 @@ public class RedisCacheConfig {
 
     private Map<String, RedisCacheConfiguration> getRedisCacheConfigurationMap() {
         Map<String, RedisCacheConfiguration> redisCacheConfigurationMap  = new HashMap<>(16);
-        redisCacheConfigurationMap.put("redisTest", this.getRedisCacheConfigurationWithTtl(12 * 60 * 60));
+        redisCacheConfigurationMap.put("redisTest", this.getRedisCacheConfigurationWithTtl(15));
         return redisCacheConfigurationMap;
     }
 

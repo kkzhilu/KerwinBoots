@@ -25,6 +25,8 @@ public class RedisServiceImpl {
         TestNode testNode = new TestNode();
         testNode.setNode("This is Node");
         testBean.setTestNode(testNode);
+
+        System.out.println("Method is from Java Code");
         return testBean;
     }
 
