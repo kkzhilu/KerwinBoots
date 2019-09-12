@@ -31,13 +31,10 @@ public class WebController {
 
     @RequestMapping("/testRedis")
     public TestBean testRedis () {
-
         Map<String, Object> map = new HashMap<>();
         map.put("key", "every things.");
         RedisUtil.hmset("aaa",map);
-        System.out.println(RedisUtil.hget("aaa", "key"));;
-
-
+        System.out.println(RedisUtil.hget("aaa", "key"));
         return new TestBean();
     }
 }
