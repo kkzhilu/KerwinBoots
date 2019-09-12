@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * ******************************
@@ -35,6 +36,15 @@ public class WebController {
         map.put("key", "every things.");
         RedisUtil.hmset("aaa",map);
         System.out.println(RedisUtil.hget("aaa", "key"));
+        return new TestBean();
+    }
+
+    AtomicLong atomicLong = new AtomicLong(0);
+
+    @RequestMapping("/safe")
+    public TestBean safe () {
+        RedisUtil.incr("LOCK", 1L);
+        System.out.println(atomicLong.addAndGet(1));
         return new TestBean();
     }
 }
