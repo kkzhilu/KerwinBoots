@@ -29,6 +29,7 @@ public class StudentServiceImpl {
 
     /** 测试事务注解 **/
     @Transactional
+    @DS("selectDataSource")
     public boolean insertTestTrans (String name) throws Exception {
         System.out.println(studentMapper.list());
         System.out.println(studentMapper.insert(name) > 0);
