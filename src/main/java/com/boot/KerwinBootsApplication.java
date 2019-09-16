@@ -9,5 +9,4 @@ public class KerwinBootsApplication {
     public static void main(String[] args) {
         SpringApplication.run(KerwinBootsApplication.class, args);
     }
-
 }
