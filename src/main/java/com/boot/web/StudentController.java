@@ -32,8 +32,13 @@ public class StudentController {
         return studentService.insertTestTrans(name);
     }
 
-    @RequestMapping("/list")
-    public List<Student> list () {
-        return studentService.list();
+    @RequestMapping("/selectDataSource")
+    public List<Student> selectDataSource () {
+        return studentService.anSelectList();
+    }
+
+    @RequestMapping("/updateDataSource")
+    public List<Student> updateDataSource () {
+        return studentService.anUpdateList();
     }
 }

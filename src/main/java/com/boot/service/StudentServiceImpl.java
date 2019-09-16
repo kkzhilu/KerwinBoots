@@ -37,18 +37,13 @@ public class StudentServiceImpl {
         return true;
     }
 
-    // 走方法名 自动切换数据源
-    public List<Student> list () {
-        return studentMapper.list();
+    @DS("selectDataSource")
+    public List<Student> anSelectList () {
+       return studentMapper.list();
     }
 
-//    @DS("selectDataSource")
-//    public List<Student> anSelectList () {
-//       return studentMapper.list();
-//    }
-//
-//    @DS("updateDataSource")
-//    public List<Student> anUpdateList () {
-//        return studentMapper.list();
-//    }
+    @DS("updateDataSource")
+    public List<Student> anUpdateList () {
+        return studentMapper.list();
+    }
 }
