@@ -139,8 +139,11 @@ final class DataSourceContextHolder {
 ### 复写路由方法
 
 ```java
+// 名字(dataSource)  Primary  Priority
 @Component
-@Primary // 自动装配时当出现多个Bean候选者时，被注解为@Primary的Bean将作为首选者，否则将抛出异常
+@Primary // 多个DataSource Bean 因此@Primary 将作为首选者
+         // @Priority 优先级
+         // 多个按类型的dataSource 为了让它找到bean可以给当前bean修改 名称 -> @Component(value = "dataSource")
 public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
 
     private static Logger logger = LoggerFactory.getLogger(DynamicRoutingDataSource.class);
@@ -279,3 +282,19 @@ AbstractAutowireCapableBeanFactory.invokeInitMethods
 ```
 
 猜测: SpringBoot中有很多Conditional... 条件注入的方式，可能是由于符合某种条件，因此将该bean作为真正的实现类进行调用，因为在正常的单数据源项目中无相关的bean且该抽象类也并没有被断点捕获到调用，如果以后有更加细致的发现，再来补充吧。
+
+
+
+### 3.为什么要使用@Primary 注解，有没有其他的方案
+
+DataSource Bean 需要被初始化，作为数据库连接所使用，但是在类 DataSourceConfig 中，有两个bean都是DataSource，且 DynamicRoutingDataSource的本质也是一个 DataSource
+
+因此 Spring容器在真正调用DataSource时，会通过类型找到此Bean，但是由于有三个同类型的Bean，因此无法确定，所以又会按名称查找，但是还是找不到，所以如果无法确定到底哪个Bean 被用作数据源连接，则会抛出异常
+
+解决方案有三种
+
+```java
+// 多个DataSource Bean 因此@Primary 将作为首选者
+// @Priority 优先级
+// 多个按类型的dataSource 为了让它找到bean可以给当前bean修改 名称 -> @Component(value = "dataSource")
+```
