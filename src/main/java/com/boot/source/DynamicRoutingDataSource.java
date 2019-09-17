@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Priority;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,8 +22,11 @@ import java.util.Map;
  * version:      V1.0
  * ******************************
  */
+// 名字(dataSource)  Primary  Priority
 @Component
-@Primary // 自动装配时当出现多个Bean候选者时，被注解为@Primary的Bean将作为首选者，否则将抛出异常
+@Primary // 多个DataSource Bean 因此@Primary 将作为首选者
+         // @Priority 优先级
+         // 多个按类型的dataSource 为了让它找到bean可以给当前bean修改 名称 -> @Component(value = "dataSource")
 public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
 
     private static Logger logger = LoggerFactory.getLogger(DynamicRoutingDataSource.class);
