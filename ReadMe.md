@@ -277,11 +277,107 @@ This class provides thread-local variables. These variables differ from their no
 
 ### 2.为什么重写了 determineCurrentLookupKey 方法，SpringBoot真正在执行的时候就会调用我们重写的类呢？
 
-```
-AbstractAutowireCapableBeanFactory.invokeInitMethods
+```java
+// 多数据源方案二代码...核心如下： 此种方案有显示的放入事务数据源中
+
+/**
+ * 配置@Transactional注解
+ */
+@Bean
+public PlatformTransactionManager transactionManager() {
+    return new DataSourceTransactionManager(dynamicDataSource());
+}
 ```
 
-猜测: SpringBoot中有很多Conditional... 条件注入的方式，可能是由于符合某种条件，因此将该bean作为真正的实现类进行调用，因为在正常的单数据源项目中无相关的bean且该抽象类也并没有被断点捕获到调用，如果以后有更加细致的发现，再来补充吧。
+回顾方案一，跟踪断点发现如下代码:
+
+```java
+@Configuration
+@ConditionalOnClass({ DataSource.class, JdbcTemplate.class })
+@ConditionalOnSingleCandidate(DataSource.class)
+@AutoConfigureAfter(DataSourceAutoConfiguration.class)
+@EnableConfigurationProperties(JdbcProperties.class)
+public class JdbcTemplateAutoConfiguration {
+
+	@Configuration
+	static class JdbcTemplateConfiguration {
+
+		private final DataSource dataSource;
+
+		private final JdbcProperties properties;
+
+		JdbcTemplateConfiguration(DataSource dataSource, JdbcProperties properties) {
+			this.dataSource = dataSource;
+			this.properties = properties;
+		}
+
+		@Bean
+		@Primary
+		@ConditionalOnMissingBean(JdbcOperations.class)
+		public JdbcTemplate jdbcTemplate() {
+			JdbcTemplate jdbcTemplate = new JdbcTemplate(this.dataSource);
+			JdbcProperties.Template template = this.properties.getTemplate();
+			jdbcTemplate.setFetchSize(template.getFetchSize());
+			jdbcTemplate.setMaxRows(template.getMaxRows());
+			if (template.getQueryTimeout() != null) {
+				jdbcTemplate.setQueryTimeout((int) template.getQueryTimeout().getSeconds());
+			}
+			return jdbcTemplate;
+		}
+
+	}
+
+	@Configuration
+	@Import(JdbcTemplateConfiguration.class)
+	static class NamedParameterJdbcTemplateConfiguration {
+
+		@Bean
+		@Primary
+		@ConditionalOnSingleCandidate(JdbcTemplate.class)
+		@ConditionalOnMissingBean(NamedParameterJdbcOperations.class)
+		public NamedParameterJdbcTemplate namedParameterJdbcTemplate(JdbcTemplate jdbcTemplate) {
+			return new NamedParameterJdbcTemplate(jdbcTemplate);
+		}
+	}
+}
+
+//*********************************************
+
+
+@Configuration
+@ConditionalOnClass({ JdbcTemplate.class, PlatformTransactionManager.class })
+@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE)
+@EnableConfigurationProperties(DataSourceProperties.class)
+public class DataSourceTransactionManagerAutoConfiguration {
+
+	@Configuration
+	@ConditionalOnSingleCandidate(DataSource.class)
+	static class DataSourceTransactionManagerConfiguration {
+
+		private final DataSource dataSource;
+
+		private final TransactionManagerCustomizers transactionManagerCustomizers;
+
+		DataSourceTransactionManagerConfiguration(DataSource dataSource,
+				ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
+			this.dataSource = dataSource;
+			this.transactionManagerCustomizers = transactionManagerCustomizers.getIfAvailable();
+		}
+
+		@Bean
+		@ConditionalOnMissingBean(PlatformTransactionManager.class)
+		public DataSourceTransactionManager transactionManager(DataSourceProperties properties) {
+			DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(this.dataSource);
+			if (this.transactionManagerCustomizers != null) {
+				this.transactionManagerCustomizers.customize(transactionManager);
+			}
+			return transactionManager;
+		}
+	}
+}
+```
+
+我们发现SpringBoot，当注入了唯一DataSource Bean之后，会调用我们创建的指定数据源，将其放入boot核心代码中，之后事务数据源，JDBC数据源都会引用我们注入的Bean，因此我们重写之后，注入完成，SpringBoot真正在执行的时候就会调用我们重写的类
 
 
 
