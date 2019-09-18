@@ -1,7 +1,7 @@
 package com.boot.web;
 
 import com.boot.bean.TestBean;
-import com.boot.config.RedisUtil;
+import com.boot.util.RedisUtil;
 import com.boot.service.RedisServiceImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
