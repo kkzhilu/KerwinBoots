@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -39,7 +40,12 @@ public class JedisConfig extends CachingConfigurerSupport {
         jedisPoolConfig.setMaxIdle(maxIdle);
         jedisPoolConfig.setMinIdle(minIdle);
         jedisPoolConfig.setMaxWaitMillis(3000L);
-        int timeOut = 3000;
-        return  new JedisPool(jedisPoolConfig, host, port, timeOut, password);
+        int timeOut = 3000 * 10;
+        return new JedisPool(jedisPoolConfig, host, port, timeOut, password);
+    }
+
+    @Bean
+    public Jedis jedis(){
+        return redisPoolFactory().getResource();
     }
 }
