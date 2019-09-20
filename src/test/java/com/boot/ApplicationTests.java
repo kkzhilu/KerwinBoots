@@ -49,7 +49,6 @@ public class ApplicationTests {
         for (Map<String, Object> map : dataList) {
             redisTemplate.opsForList().leftPush("user:1:order", map.get("key"));
         }
-
     }
 
     @Test
