@@ -14,7 +14,7 @@ import java.util.UUID;
  * ******************************
  * author：      柯贤铭
  * createTime:   2019/9/20 10:47
- * description:  TODO
+ * description:  RedisLock
  * version:      V1.0
  * ******************************
  */
