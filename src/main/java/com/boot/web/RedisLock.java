@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.UUID;
 
 /**
@@ -53,7 +54,7 @@ public class RedisLock {
                 RedisContextHolder.clear();
                 String uuid = UUID.randomUUID().toString();
 
-                String set = jedis.set(KEY, uuid, "NX", "EX", 3);
+                String set = jedis.set(KEY, uuid, "NX", "EX", 1000);
                 RedisContextHolder.setValue(uuid);
 
                 if (!"OK".equals(set)) {
@@ -64,9 +65,14 @@ public class RedisLock {
                 }
             }
         } finally {
-            if (RedisContextHolder.getValue() != null && jedis.get(KEY) != null && RedisContextHolder.getValue().equals(jedis.get(KEY))) {
+            // 解锁 -> 保证获取数据，判断一致以及删除数据三个操作是原子的， 因此如下写法是不符合的
+            /*if (RedisContextHolder.getValue() != null && jedis.get(KEY) != null && RedisContextHolder.getValue().equals(jedis.get(KEY))) {
                 jedis.del(KEY);
-            }
+            }*/
+
+            // 正确姿势 -> 使用Lua脚本,保证原子性
+            String luaScript = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del',KEYS[1]) else return 0 end";
+            Object eval = jedis.eval(luaScript, Collections.singletonList(KEY), Collections.singletonList(RedisContextHolder.getValue()));
         }
         return "锁创建成功-业务处理成功";
     }
