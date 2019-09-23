@@ -1,6 +1,5 @@
-package redis;
+package redisServer;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -26,7 +25,7 @@ public class SocketApp {
             redis.getInputStream().read(result);
             System.out.println(new String(result));
         } catch (Exception e) {
-            System.out.println("Error.");
+            e.printStackTrace();
         }
     }
 }
