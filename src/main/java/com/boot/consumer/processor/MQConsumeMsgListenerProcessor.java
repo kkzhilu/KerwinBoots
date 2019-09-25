@@ -33,7 +33,7 @@ public class MQConsumeMsgListenerProcessor implements MessageListenerConcurrentl
 		MessageExt messageExt = msgs.get(0);
 		logger.info("Receive Message is：" + messageExt.toString());
 		logger.info("Receive Message Body is：" + new String(messageExt.getBody()));
-		if("kxm".equals(messageExt.getTopic())){
+		if("DemoTopic".equals(messageExt.getTopic())){
 			if("tagOne".equals(messageExt.getTags())){
 				//TODO 判断该消息是否重复消费（RocketMQ不保证消息不重复，如果你的业务需要保证严格的不重复消息，需要你自己在业务端去重）
 				//TODO 获取该消息重试次数
