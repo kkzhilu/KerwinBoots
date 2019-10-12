@@ -73,12 +73,7 @@ public class AccessTokenWeb {
         return token;
     }
 
-
-    /***
-     * AccessToken
-     */
-    public class AccessToken {
-
+    private class AccessToken {
         private String accessToken;
 
         private int expiresin;
