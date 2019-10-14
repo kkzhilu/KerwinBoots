@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 /**
@@ -34,10 +33,10 @@ public class NetWorkHelper {
             con.setSSLSocketFactory(ctx.getSocketFactory());
             con.setHostnameVerifier((arg0, arg1) -> true);
 
-            //允许输入流，即允许下载
+            // 允许输入流，即允许下载
             con.setDoInput(true);
 
-            //在android中必须将此项设置为false
+            // 在android中必须将此项设置为false
             con.setDoOutput(false);  //允许输出流，即允许上传
             con.setUseCaches(false); //不使用缓冲
 
@@ -66,15 +65,9 @@ public class NetWorkHelper {
         }
 
         @Override
-        public void checkServerTrusted(X509Certificate[] arg0, String arg1)
-                throws CertificateException {
-
-        }
+        public void checkServerTrusted(X509Certificate[] arg0, String arg1) { }
 
         @Override
-        public void checkClientTrusted(X509Certificate[] arg0, String arg1)
-                throws CertificateException {
-
-        }
+        public void checkClientTrusted(X509Certificate[] arg0, String arg1) { }
     };
 }

@@ -1,5 +1,6 @@
 package com.boot.bean;
 
+import com.boot.spider.SpiderBeansHandle;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
 
@@ -11,18 +12,27 @@ import org.jsoup.nodes.Element;
  * version:      V1.0
  * ******************************
  */
-public class WeiBoInfo extends BaseBean {
+public class WeiBoInfo implements SpiderBeansHandle<WeiBoInfo> {
 
     private  static final String ROOT = "https://s.weibo.com";
 
-    public   static final String URL = "https://s.weibo.com/top/summary?Refer=top_hot&topnav=1&wvr=6";
+    @Override
+    public String getUrl() {
+        return "https://s.weibo.com/top/summary?Refer=top_hot&topnav=1&wvr=6";
+    }
 
-    public   static final String CSS = "div.data > table > tbody > tr";
+    @Override
+    public String getCookie() {
+        return null;
+    }
 
-    /***
-     * PoJo 根据业务解析
-     */
-    public static WeiBoInfo parseElement (Element element) {
+    @Override
+    public String getSelector() {
+        return "div.data > table > tbody > tr";
+    }
+
+    @Override
+    public WeiBoInfo parseElement(Element element) {
         String order = element.child(0).ownText();
         if (StringUtils.isBlank(order)) {
             return null;
@@ -30,34 +40,55 @@ public class WeiBoInfo extends BaseBean {
 
         String url = ROOT + element.child(1).child(0).attr("href");
         String desc = element.child(1).child(0).ownText();
-        return new WeiBoInfo(url, desc, order);
+        return new WeiBoInfo(order, url, desc);
     }
+
 
     // WeiBo私有 排名
-    private String order;
+    private String topicOrder;
 
-    public WeiBoInfo() { }
+    private String topicUrl;
 
-    public WeiBoInfo(String url, String desc, String order) {
-        this.url   = url;
-        this.desc  = desc;
-        this.order = order;
+    private String topicText;
+
+    public String getTopicOrder() {
+        return topicOrder;
     }
 
-    public String getOrder() {
-        return order;
+    public void setTopicOrder(String topicOrder) {
+        this.topicOrder = topicOrder;
     }
 
-    public void setOrder(String order) {
-        this.order = order;
+    public String getTopicUrl() {
+        return topicUrl;
+    }
+
+    public void setTopicUrl(String topicUrl) {
+        this.topicUrl = topicUrl;
+    }
+
+    public String getTopicText() {
+        return topicText;
+    }
+
+    public void setTopicText(String topicText) {
+        this.topicText = topicText;
     }
 
     @Override
     public String toString() {
         return "WeiBoInfo{" +
-                "order='" + order + '\'' +
-                ", url='" + url + '\'' +
-                ", desc='" + desc + '\'' +
-                "} " + super.toString();
+                "topicOrder='" + topicOrder + '\'' +
+                ", topicUrl='" + topicUrl + '\'' +
+                ", topicText='" + topicText + '\'' +
+                '}';
     }
+
+    public WeiBoInfo(String topicOrder, String topicUrl, String topicText) {
+        this.topicOrder = topicOrder;
+        this.topicUrl = topicUrl;
+        this.topicText = topicText;
+    }
+
+    public WeiBoInfo() { }
 }
