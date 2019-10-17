@@ -1,11 +1,12 @@
 package com.boot.thread;
 
+import com.boot.config.ThreadConfig;
 import com.boot.thread.handle.Context;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.BlockingQueue;
+import javax.annotation.Resource;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * ******************************
@@ -18,25 +19,26 @@ import java.util.concurrent.ExecutorService;
 @Component
 public class MqDataConsumer {
 
-    @Autowired
-    ExecutorService fixedPool;
-
-    @Autowired
-    BlockingQueue<Context> myqueue;
+    @Resource
+    ThreadConfig threadConfig;
 
     public MqDataConsumer() {
-        fixedPool.execute(() -> {
-            while (true) {
-                try {
-                    // 从队列中拿任务
-                    Context context = myqueue.take();
-                    fixedPool.execute(() -> {
-                        while (context.getFlag()) {
-                            context.handle();
-                        }
-                    });
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+        ExecutorService fixPool = Executors.newFixedThreadPool(10);
+        fixPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        // 从队列中拿任务
+                        Context context = threadConfig.getQueue().take();
+                        fixPool.execute(() -> {
+                            while (context.getFlag()) {
+                                context.handle();
+                            }
+                        });
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         });

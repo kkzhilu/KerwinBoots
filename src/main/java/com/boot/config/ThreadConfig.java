@@ -1,12 +1,10 @@
 package com.boot.config;
 
 import com.boot.thread.handle.Context;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -17,18 +15,17 @@ import java.util.concurrent.LinkedBlockingQueue;
  * version:      V1.0
  * ******************************
  */
-@Configuration
+@Component
 public class ThreadConfig {
 
-    @Bean
-    public ExecutorService fixedPool() {
-        // 初始化线程池 可以自定配置或者用更合适的都可以
-        return Executors.newFixedThreadPool(11);
+    private BlockingQueue<Context> queue;
+
+    public ThreadConfig() {
+        // 初始化阻塞队列 可以更换更合适的
+        queue = new LinkedBlockingQueue<>();
     }
 
-    @Bean
-    public BlockingQueue<Context> myqueue() {
-        // 初始化阻塞队列 可以更换更合适的
-        return new LinkedBlockingQueue<>();
+    public BlockingQueue<Context> getQueue() {
+        return queue;
     }
 }

@@ -1,17 +1,17 @@
 package com.boot.thread;
 
 import com.boot.config.MqStatus;
+import com.boot.config.ThreadConfig;
 import com.boot.pojo.DbMqDemo;
 import com.boot.service.DbMQService;
 import com.boot.thread.handle.CommitHandle;
 import com.boot.thread.handle.Context;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * ******************************
@@ -24,32 +24,33 @@ import java.util.concurrent.ExecutorService;
 @Component
 public class MqDataProvider {
 
-    @Autowired
-    ExecutorService fixedPool;
-
-    @Autowired
-    BlockingQueue<Context> myqueue;
+    @Resource
+    ThreadConfig threadConfig;
 
     @Resource
     DbMQService dbMQService;
 
     private void init () {
-        fixedPool.execute(() -> {
-            try {
-                // 提交或者需要重试的
-                List<DbMqDemo> dbMqDemos = dbMQService.selectMQ(MqStatus.HAVA_COMMIT.getStatus());
-                for (DbMqDemo dbMqDemo : dbMqDemos) {
-                    Context context = new Context();
-                    context.setDbMqDemo(dbMqDemo);
-                    context.setFlag(true);
-                    context.setStatusInterface(new CommitHandle());
-                    myqueue.put(context);
-                }
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        service.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // 提交或者需要重试的
+                    List<DbMqDemo> dbMqDemos = dbMQService.selectMQ(MqStatus.HAVA_COMMIT.getStatus());
+                    for (DbMqDemo dbMqDemo : dbMqDemos) {
+                        Context context = new Context();
+                        context.setDbMqDemo(dbMqDemo);
+                        context.setFlag(true);
+                        context.setStatusInterface(new CommitHandle());
+                        threadConfig.getQueue().put(context);
+                    }
 
-                // 5s 拿一批任务
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                    // 5s 拿一批任务
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
