@@ -5,6 +5,7 @@ import com.boot.pojo.DbMqDemo;
 import com.boot.service.DbMQService;
 import com.boot.thread.handle.CommitHandle;
 import com.boot.thread.handle.Context;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -23,17 +24,17 @@ import java.util.concurrent.ExecutorService;
 @Component
 public class MqDataProvider {
 
-    @Resource
+    @Autowired
     ExecutorService fixedPool;
 
-    @Resource
+    @Autowired
     BlockingQueue<Context> myqueue;
 
     @Resource
     DbMQService dbMQService;
 
-    public MqDataProvider () {
-        fixedPool.submit(() -> {
+    private void init () {
+        fixedPool.execute(() -> {
             try {
                 // 提交或者需要重试的
                 List<DbMqDemo> dbMqDemos = dbMQService.selectMQ(MqStatus.HAVA_COMMIT.getStatus());
@@ -51,5 +52,9 @@ public class MqDataProvider {
                 e.printStackTrace();
             }
         });
+    }
+
+    public MqDataProvider () {
+        init();
     }
 }
