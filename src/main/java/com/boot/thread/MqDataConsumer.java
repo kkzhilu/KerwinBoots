@@ -1,6 +1,5 @@
 package com.boot.thread;
 
-import com.boot.config.ThreadConfig;
 import com.boot.thread.handle.Context;
 import org.springframework.stereotype.Component;
 
@@ -20,21 +19,20 @@ import java.util.concurrent.ExecutorService;
 public class MqDataConsumer {
 
     @Resource
-    ThreadConfig threadConfig;
+    ExecutorService fixedPool;
+
+    @Resource
+    BlockingQueue<Context> myqueue;
 
     public MqDataConsumer() {
         new Runnable(){
             @Override
             public void run() {
-
-                BlockingQueue<Context> queue = threadConfig.getQueue();
-
-                ExecutorService service = threadConfig.getService();
                 while (true) {
                     try {
                         // 从队列中拿任务
-                        Context context = queue.take();
-                        service.submit(() -> {
+                        Context context = myqueue.take();
+                        fixedPool.submit(() -> {
                             while (context.getFlag()) {
                                 context.handle();
                             }

@@ -1,7 +1,6 @@
 package com.boot.thread;
 
 import com.boot.config.MqStatus;
-import com.boot.config.ThreadConfig;
 import com.boot.pojo.DbMqDemo;
 import com.boot.service.DbMQService;
 import com.boot.thread.handle.CommitHandle;
@@ -10,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
 
 /**
  * ******************************
@@ -23,13 +24,16 @@ import java.util.List;
 public class MqDataProvider {
 
     @Resource
-    ThreadConfig threadConfig;
+    ExecutorService fixedPool;
+
+    @Resource
+    BlockingQueue<Context> myqueue;
 
     @Resource
     DbMQService dbMQService;
 
     public MqDataProvider () {
-        threadConfig.getService().submit(() -> {
+        fixedPool.submit(() -> {
             try {
                 // 提交或者需要重试的
                 List<DbMqDemo> dbMqDemos = dbMQService.selectMQ(MqStatus.HAVA_COMMIT.getStatus());
@@ -38,7 +42,7 @@ public class MqDataProvider {
                     context.setDbMqDemo(dbMqDemo);
                     context.setFlag(true);
                     context.setStatusInterface(new CommitHandle());
-                    threadConfig.getQueue().put(context);
+                    myqueue.put(context);
                 }
 
                 // 5s 拿一批任务
