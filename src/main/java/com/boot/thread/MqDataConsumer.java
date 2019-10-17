@@ -4,9 +4,8 @@ import com.boot.config.ThreadConfig;
 import com.boot.thread.handle.Context;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * ******************************
@@ -22,23 +21,20 @@ public class MqDataConsumer {
     @Resource
     ThreadConfig threadConfig;
 
-    public MqDataConsumer() {
-        ExecutorService fixPool = Executors.newFixedThreadPool(10);
-        fixPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        // 从队列中拿任务
-                        Context context = threadConfig.getQueue().take();
-                        fixPool.execute(() -> {
-                            while (context.getFlag()) {
-                                context.handle();
-                            }
-                        });
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
+    @PostConstruct
+    public void init () {
+        threadConfig.getService().execute(() -> {
+            while (true) {
+                try {
+                    // 从队列中拿任务
+                    Context context = threadConfig.getQueue().take();
+                    threadConfig.getService().execute(() -> {
+                        while (context.getFlag()) {
+                            context.handle();
+                        }
+                    });
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
                 }
             }
         });

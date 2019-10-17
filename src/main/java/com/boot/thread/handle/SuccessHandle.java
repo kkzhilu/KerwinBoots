@@ -23,5 +23,7 @@ public class SuccessHandle implements StatusInterface{
 
         // 不用执行了
         context.setFlag(false);
+
+        System.out.println("Handle successful:: 已完成, uuid is: " + dbMqDemo.getUuid());
     }
 }

@@ -8,10 +8,9 @@ import com.boot.thread.handle.CommitHandle;
 import com.boot.thread.handle.Context;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * ******************************
@@ -30,12 +29,11 @@ public class MqDataProvider {
     @Resource
     DbMQService dbMQService;
 
-    private void init () {
-        ExecutorService service = Executors.newSingleThreadExecutor();
-        service.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
+    @PostConstruct
+    public void init () {
+        threadConfig.getService().execute(() -> {
+            try {
+                while (true) {
                     // 提交或者需要重试的
                     List<DbMqDemo> dbMqDemos = dbMQService.selectMQ(MqStatus.HAVA_COMMIT.getStatus());
                     for (DbMqDemo dbMqDemo : dbMqDemos) {
@@ -48,14 +46,10 @@ public class MqDataProvider {
 
                     // 5s 拿一批任务
                     Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         });
-    }
-
-    public MqDataProvider () {
-        init();
     }
 }

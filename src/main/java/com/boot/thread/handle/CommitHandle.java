@@ -40,7 +40,7 @@ public class CommitHandle implements StatusInterface{
                 // 进入成功逻辑
                 context.setStatusInterface(new SuccessHandle());
             } catch (Exception e) {
-                logger.error(e.getMessage(), new Throwable(e));
+                logger.error("模拟异常:: uuid is : " + dbMqDemo.getUuid());
 
                 // 异常则处理为异常状态 等待重试 | 且增加publishtime 向后延一下执行
                 dbMqDemo.setDescription(MqStatus.ERROR_AGAIN.getDescr());
