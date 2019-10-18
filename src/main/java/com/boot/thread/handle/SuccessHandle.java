@@ -18,7 +18,7 @@ public class SuccessHandle implements StatusInterface{
         // 执行成功
         DbMqDemo dbMqDemo = context.getDbMqDemo();
         dbMqDemo.setDescription(MqStatus.DONE.getDescr());
-        dbMqDemo.setStatus(MqStatus.DONEING.getStatus());
+        dbMqDemo.setStatus(MqStatus.DONE.getStatus());
         StatusInterface.getService().updateMQ(dbMqDemo);
 
         // 不用执行了
