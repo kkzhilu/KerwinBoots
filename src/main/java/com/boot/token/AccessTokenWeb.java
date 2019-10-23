@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -23,13 +24,7 @@ public class AccessTokenWeb {
 
     private static AccessToken ACCESS_TOKEN = null;
 
-    public AccessTokenWeb () {
-        init();
-    }
-
-    /**
-     * init
-     */
+    @PostConstruct
     private void init () {
         final String appId = "wx593dea49d2327c47";
         final String appSecret = "a750b93187ff57e77001e70b90dfa6c7";
