@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -34,8 +35,7 @@ public class FileQueuePool {
     /** 线程池 **/
     private ExecutorService service;
 
-    public FileQueuePool () { init(); }
-
+    @PostConstruct
     private void init () {
         blockingQueue = new LinkedBlockingQueue<>();
 
