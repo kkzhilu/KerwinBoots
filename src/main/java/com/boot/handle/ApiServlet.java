@@ -3,6 +3,8 @@ package com.boot.handle;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.time.StopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -42,7 +44,7 @@ public class ApiServlet extends HttpServlet {
      */
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         this.doPost(req, resp);
     }
 
@@ -76,6 +78,9 @@ public class ApiServlet extends HttpServlet {
 
                     Object invoke = ApiDataUtil.getHandleMapping().get(key).invoke(ApiDataUtil.getIocFactory().get(action), data);
                     response.getWriter().write(invoke.toString());
+
+                    logger.info("Message:: Action is: {}, Method is: {}, Params is: {}", action, method, data);
+
                     return;
                 }
             }
@@ -86,4 +91,6 @@ public class ApiServlet extends HttpServlet {
             throw new IOException("Error parsing JSON request string");
         }
     }
+
+    private static Logger logger = LoggerFactory.getLogger(ApiServlet.class);
 }
