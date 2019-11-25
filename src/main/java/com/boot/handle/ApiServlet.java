@@ -1,12 +1,12 @@
 package com.boot.handle;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -77,7 +77,10 @@ public class ApiServlet extends HttpServlet {
                     }
 
                     Object invoke = ApiDataUtil.getHandleMapping().get(key).invoke(ApiDataUtil.getIocFactory().get(action), data);
-                    response.getWriter().write(invoke.toString());
+
+                    response.setContentType("application/json;charset=UTF-8");
+
+                    response.getWriter().write(JSON.toJSONString(invoke));
 
                     logger.info("Message:: Action is: {}, Method is: {}, Params is: {}", action, method, data);
 
