@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boot.dao.ScriptDirDao">
+
+    <resultMap id="BaseResultMap" type="com.boot.bean.ScriptDir" >
+        <result column="script_dir_id"             property="scriptDirId" />
+        <result column="eid"                       property="eid" />
+        <result column="projectid"                 property="projectid" />
+        <result column="parent_dir_id"             property="parentDirId" />
+        <result column="script_dir_name"           property="scriptDirName" />
+        <result column="script_dir_creator_userid" property="scriptDirCreatorUserid" />
+        <result column="script_dir_updater_userid" property="scriptDirUpdaterUserid" />
+        <result column="script_dir_status"         property="scriptDirStatus" />
+        <result column="script_dir_version"        property="scriptDirVersion" />
+        <result column="createtime"                property="createtime" />
+        <result column="updatetime"                property="updatetime" />
+        <result column="is_delete"                 property="whetherDelete" />
+        <result column="dir_type"                  property="dirType" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        script_dir_id,
+        eid,
+        projectid,
+        parent_dir_id,
+        script_dir_name,
+        script_dir_creator_userid,
+        script_dir_updater_userid,
+        script_dir_status,
+        script_dir_version,
+        createtime,
+        updatetime,
+        is_delete,
+        dir_type
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="com.boot.bean.ScriptDir">
+        INSERT INTO script_dir
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test ='null != scriptDirId'>
+                script_dir_id,
+            </if>
+            <if test ='null != eid'>
+                eid,
+            </if>
+            <if test ='null != projectid'>
+                projectid,
+            </if>
+            <if test ='null != parentDirId'>
+                parent_dir_id,
+            </if>
+            <if test ='null != scriptDirName'>
+                script_dir_name,
+            </if>
+            <if test ='null != scriptDirCreatorUserid'>
+                script_dir_creator_userid,
+            </if>
+            <if test ='null != scriptDirUpdaterUserid'>
+                script_dir_updater_userid,
+            </if>
+            <if test ='null != scriptDirStatus'>
+                script_dir_status,
+            </if>
+            <if test ='null != scriptDirVersion'>
+                script_dir_version,
+            </if>
+            <if test ='null != createtime'>
+                createtime,
+            </if>
+            <if test ='null != updatetime'>
+                updatetime,
+            </if>
+            <if test ='null != whetherDelete'>
+                is_delete,
+            </if>
+            <if test ='null != dirType'>
+                dir_type
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test ='null != scriptDirId'>
+                #{scriptDirId},
+            </if>
+            <if test ='null != eid'>
+                #{eid},
+            </if>
+            <if test ='null != projectid'>
+                #{projectid},
+            </if>
+            <if test ='null != parentDirId'>
+                #{parentDirId},
+            </if>
+            <if test ='null != scriptDirName'>
+                #{scriptDirName},
+            </if>
+            <if test ='null != scriptDirCreatorUserid'>
+                #{scriptDirCreatorUserid},
+            </if>
+            <if test ='null != scriptDirUpdaterUserid'>
+                #{scriptDirUpdaterUserid},
+            </if>
+            <if test ='null != scriptDirStatus'>
+                #{scriptDirStatus},
+            </if>
+            <if test ='null != scriptDirVersion'>
+                #{scriptDirVersion},
+            </if>
+            <if test ='null != createtime'>
+                #{createtime},
+            </if>
+            <if test ='null != updatetime'>
+                #{updatetime},
+            </if>
+            <if test ='null != whetherDelete'>
+                #{whetherDelete},
+            </if>
+            <if test ='null != dirType'>
+                #{dirType}
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="delete" >
+        DELETE FROM script_dir
+        WHERE script_dir_id = #{scriptDirId}
+    </delete>
+
+    <update id="update" parameterType="com.boot.bean.ScriptDir">
+        UPDATE scriptdir
+        <set>
+            <if test ='null != eid'>eid = #{eid},</if>
+            <if test ='null != projectid'>projectid = #{projectid},</if>
+            <if test ='null != parentDirId'>parent_dir_id = #{parentDirId},</if>
+            <if test ='null != scriptDirName'>script_dir_name = #{scriptDirName},</if>
+            <if test ='null != scriptDirCreatorUserid'>script_dir_creator_userid = #{scriptDirCreatorUserid},</if>
+            <if test ='null != scriptDirUpdaterUserid'>script_dir_updater_userid = #{scriptDirUpdaterUserid},</if>
+            <if test ='null != scriptDirStatus'>script_dir_status = #{scriptDirStatus},</if>
+            <if test ='null != scriptDirVersion'>script_dir_version = #{scriptDirVersion},</if>
+            <if test ='null != createtime'>createtime = #{createtime},</if>
+            <if test ='null != updatetime'>updatetime = #{updatetime},</if>
+            <if test ='null != whetherDelete'>is_delete = #{whetherDelete},</if>
+            <if test ='null != dirType'>dir_type = #{dirType}</if>
+        </set>
+        WHERE script_dir_id = #{scriptDirId}
+    </update>
+
+
+    <select id="load" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM script_dir
+        WHERE script_dir_id = #{scriptDirId}
+    </select>
+
+    <select id="pageList" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM script_dir
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="pageListCount" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM script_dir
+    </select>
+
+</mapper>
