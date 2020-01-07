@@ -3,6 +3,7 @@ package com.boot.web;
 import com.boot.bean.ScriptDir;
 import com.boot.service.ScriptDirServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,7 +44,7 @@ public class ScriptDirController {
 
     /**
      * [更新]
-     * @author 大狼狗
+     * @author Kerwin
      * @date 2019/12/30
      **/
     @RequestMapping("/update")
@@ -53,7 +54,7 @@ public class ScriptDirController {
 
     /**
      * [查询] 根据主键 id 查询
-     * @author 大狼狗
+     * @author Kerwin
      * @date 2019/12/30
      **/
     @RequestMapping("/load")
@@ -63,17 +64,16 @@ public class ScriptDirController {
 
     /**
      * [查询] 分页查询
-     * @author 大狼狗
+     * @author Kerwin
      * @date 2019/12/30
      **/
     @RequestMapping("/pageList")
-    public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int offset,
-                                        @RequestParam(required = false, defaultValue = "10") int pagesize) {
-        List<ScriptDir> list = service.pageList(offset, pagesize);
-
+    public Map<String, Object> pageList(@RequestBody Map<String, Object> conditoin) {
+        int offset   = (int) conditoin.get("offset");
+        int pageSize = (int) conditoin.get("pageSize");
+        List<ScriptDir> list = service.pageList(offset, pageSize);
         Map<String, Object> map = new HashMap<>();
         map.put("LIST", list);
         return map;
     }
-
 }

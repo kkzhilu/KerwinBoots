@@ -2,6 +2,7 @@ package com.boot.dao;
 
 import com.boot.bean.ScriptDir;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public interface ScriptDirDao {
     /**
      * [查询] 分页查询
      **/
-    List<ScriptDir> pageList(int offset, int pagesize);
+    List<ScriptDir> pageList(@Param("offset") int offset, @Param("pageSize") int pageSize);
 
     /**
      * [查询] 分页查询 count
