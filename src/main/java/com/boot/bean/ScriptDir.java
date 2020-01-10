@@ -55,7 +55,7 @@ public class ScriptDir implements Serializable {
     /**
      * script_dir_status
      */
-    private boolean scriptDirStatus;
+    private Integer scriptDirStatus;
 
     /**
      * script_dir_version
@@ -75,12 +75,12 @@ public class ScriptDir implements Serializable {
     /**
      * is_delete
      */
-    private boolean whetherDelete;
+    private Integer whetherDelete;
 
     /**
      * dir_type
      */
-    private boolean dirType;
+    private Integer dirType;
 
     public ScriptDir() { }
 }

@@ -1,22 +1,19 @@
-package com.boot.dao;
+package com.boot.service;
 
 import com.boot.bean.ScriptDir;
 import com.boot.common.PageList;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 /**
  * ******************************
  * author：      柯贤铭
- * createTime:   2019/12/30 10:27
- * description:  ScriptDirDao
+ * createTime:   2020/1/10 14:38
+ * description:  ScriptDirService
  * version:      V1.0
  * ******************************
  */
-@Mapper
-public interface ScriptDirDao {
+public interface ScriptDirService {
 
     /**
      * [新增]
@@ -41,7 +38,7 @@ public interface ScriptDirDao {
     /**
      * [批量删除]
      **/
-    int batchDelete(List<Object> list);
+    int batchDelete(List<Object> keys);
 
     /**
      * [主键查询]
@@ -56,7 +53,7 @@ public interface ScriptDirDao {
     /**
      * [分页条件查询]
      **/
-    List<ScriptDir> selectPage (@Param("scriptDir") ScriptDir scriptDir, @Param("page") Integer page, @Param("pageSize") Integer pageSize);
+    PageList<ScriptDir> selectPage (ScriptDir scriptDir, Integer page, Integer pageSize);
 
     /**
      * [总量查询]

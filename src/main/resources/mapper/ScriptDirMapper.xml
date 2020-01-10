@@ -35,7 +35,8 @@
         dir_type
     </sql>
 
-    <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="com.boot.bean.ScriptDir">
+    <!-- 插入数据 -->
+    <insert id="insert" parameterType="com.boot.bean.ScriptDir">
         INSERT INTO script_dir
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test ='null != scriptDirId'>
@@ -121,13 +122,31 @@
         </trim>
     </insert>
 
-    <delete id="delete" >
-        DELETE FROM script_dir
-        WHERE script_dir_id = #{scriptDirId}
-    </delete>
+    <!-- 批量插入数据 -->
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO script_dir ( <include refid="Base_Column_List" /> ) VALUES
+        <foreach collection="list" item="curr" index="index" separator=",">
+            (
+                #{curr.scriptDirId},
+                #{curr.eid},
+                #{curr.projectid},
+                #{curr.parentDirId},
+                #{curr.scriptDirName},
+                #{curr.scriptDirCreatorUserid},
+                #{curr.scriptDirUpdaterUserid},
+                #{curr.scriptDirStatus},
+                #{curr.scriptDirVersion},
+                #{curr.createtime},
+                #{curr.updatetime},
+                #{curr.whetherDelete},
+                #{curr.dirType}
+            )
+        </foreach>
+    </insert>
 
+    <!-- 更新 -->
     <update id="update" parameterType="com.boot.bean.ScriptDir">
-        UPDATE scriptdir
+        UPDATE script_dir
         <set>
             <if test ='null != eid'>eid = #{eid},</if>
             <if test ='null != projectid'>projectid = #{projectid},</if>
@@ -145,22 +164,165 @@
         WHERE script_dir_id = #{scriptDirId}
     </update>
 
+    <!-- 删除 -->
+    <delete id="delete">
+        DELETE FROM script_dir
+        WHERE script_dir_id = #{key}
+    </delete>
 
-    <select id="load" resultMap="BaseResultMap">
+    <!-- 批量删除 -->
+    <delete id="batchDelete" parameterType = "java.util.List">
+        DELETE FROM script_dir WHERE script_dir_id IN
+        <foreach collection="list"  item="item" open="(" separator="," close=")"  >
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 主键查询 -->
+    <select id="selectByKey" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List" />
         FROM script_dir
-        WHERE script_dir_id = #{scriptDirId}
+        WHERE script_dir_id = #{key}
     </select>
 
-    <select id="pageList" resultMap="BaseResultMap">
+    <!-- 条件查询 -->
+    <select id="selectList" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List" />
         FROM script_dir
-        LIMIT #{offset}, #{pageSize}
+        <where>
+            <if test ='null != scriptDirId'>
+                and script_dir_id = #{scriptDirId}
+            </if>
+            <if test ='null != eid'>
+                and eid = #{eid}
+            </if>
+            <if test ='null != projectid'>
+                and projectid = #{projectid}
+            </if>
+            <if test ='null != parentDirId'>
+                and parent_dir_id = #{parentDirId}
+            </if>
+            <if test ='null != scriptDirName'>
+                and script_dir_name = #{scriptDirName}
+            </if>
+            <if test ='null != scriptDirCreatorUserid'>
+                and script_dir_creator_userid = #{scriptDirCreatorUserid}
+            </if>
+            <if test ='null != scriptDirUpdaterUserid'>
+                and script_dir_updater_userid = #{scriptDirUpdaterUserid}
+            </if>
+            <if test ='null != scriptDirStatus'>
+                and script_dir_status = #{scriptDirStatus}
+            </if>
+            <if test ='null != scriptDirVersion'>
+                and script_dir_version = #{scriptDirVersion}
+            </if>
+            <if test ='null != createtime'>
+                and createtime = #{createtime}
+            </if>
+            <if test ='null != updatetime'>
+                and updatetime = #{updatetime}
+            </if>
+            <if test ='null != whetherDelete'>
+                and is_delete = #{whetherDelete}
+            </if>
+            <if test ='null != dirType'>
+                and dir_type = #{dirType}
+            </if>
+        </where>
     </select>
 
-    <select id="pageListCount" resultType="java.lang.Integer">
-        SELECT count(1)
+    <!-- 分页条件查询 -->
+    <select id="selectPage" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
         FROM script_dir
+        <where>
+            <if test ='null != scriptDir.scriptDirId'>
+                and script_dir_id = #{scriptDir.scriptDirId}
+            </if>
+            <if test ='null != scriptDir.eid'>
+                and eid = #{scriptDir.eid}
+            </if>
+            <if test ='null != scriptDir.projectid'>
+                and projectid = #{scriptDir.projectid}
+            </if>
+            <if test ='null != scriptDir.parentDirId'>
+                and parent_dir_id = #{scriptDir.parentDirId}
+            </if>
+            <if test ='null != scriptDir.scriptDirName'>
+                and script_dir_name = #{scriptDir.scriptDirName}
+            </if>
+            <if test ='null != scriptDir.scriptDirCreatorUserid'>
+                and script_dir_creator_userid = #{scriptDir.scriptDirCreatorUserid}
+            </if>
+            <if test ='null != scriptDir.scriptDirUpdaterUserid'>
+                and script_dir_updater_userid = #{scriptDir.scriptDirUpdaterUserid}
+            </if>
+            <if test ='null != scriptDir.scriptDirStatus'>
+                and script_dir_status = #{scriptDir.scriptDirStatus}
+            </if>
+            <if test ='null != scriptDir.scriptDirVersion'>
+                and script_dir_version = #{scriptDir.scriptDirVersion}
+            </if>
+            <if test ='null != scriptDir.createtime'>
+                and createtime = #{scriptDir.createtime}
+            </if>
+            <if test ='null != scriptDir.updatetime'>
+                and updatetime = #{scriptDir.updatetime}
+            </if>
+            <if test ='null != scriptDir.whetherDelete'>
+                and is_delete = #{scriptDir.whetherDelete}
+            </if>
+            <if test ='null != scriptDir.dirType'>
+                and dir_type = #{scriptDir.dirType}
+            </if>
+        </where>
+        limit #{page,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
 
+    <!-- 总量查询 -->
+    <select id="total" resultType="java.lang.Integer">
+        SELECT count(script_dir_id) FROM script_dir
+        <where>
+            <if test ='null != scriptDirId'>
+                and script_dir_id = #{scriptDirId}
+            </if>
+            <if test ='null != eid'>
+                and eid = #{eid}
+            </if>
+            <if test ='null != projectid'>
+                and projectid = #{projectid}
+            </if>
+            <if test ='null != parentDirId'>
+                and parent_dir_id = #{parentDirId}
+            </if>
+            <if test ='null != scriptDirName'>
+                and script_dir_name = #{scriptDirName}
+            </if>
+            <if test ='null != scriptDirCreatorUserid'>
+                and script_dir_creator_userid = #{scriptDirCreatorUserid}
+            </if>
+            <if test ='null != scriptDirUpdaterUserid'>
+                and script_dir_updater_userid = #{scriptDirUpdaterUserid}
+            </if>
+            <if test ='null != scriptDirStatus'>
+                and script_dir_status = #{scriptDirStatus}
+            </if>
+            <if test ='null != scriptDirVersion'>
+                and script_dir_version = #{scriptDirVersion}
+            </if>
+            <if test ='null != createtime'>
+                and createtime = #{createtime}
+            </if>
+            <if test ='null != updatetime'>
+                and updatetime = #{updatetime}
+            </if>
+            <if test ='null != whetherDelete'>
+                and is_delete = #{whetherDelete}
+            </if>
+            <if test ='null != dirType'>
+                and dir_type = #{dirType}
+            </if>
+        </where>
+    </select>
 </mapper>
