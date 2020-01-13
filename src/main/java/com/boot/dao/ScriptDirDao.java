@@ -1,7 +1,6 @@
 package com.boot.dao;
 
 import com.boot.bean.ScriptDir;
-import com.boot.common.PageList;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
