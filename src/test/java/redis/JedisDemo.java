@@ -31,7 +31,7 @@ public class JedisDemo {
 
     public static void push () {
         Jedis jedis = jedisPool.getResource();
-        String[] strings = new String[8416];
+        String[] strings = new String[8500];
         for (int i = 0; i < strings.length; i++) {
             strings[i] = "Demo-" + i;
         }
@@ -47,7 +47,7 @@ public class JedisDemo {
             System.out.println("Length: " + length);
 
             long curr = 0L;
-            while (curr <= length) {
+            while (curr < length) {
                 List<String> list = jedis.lrange(KEY, 0, 500L);
                 for (String s : list) {
                     jedis.lrem(KEY, 1, s);
