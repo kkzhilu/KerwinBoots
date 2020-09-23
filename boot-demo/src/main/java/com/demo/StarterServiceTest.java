@@ -21,14 +21,14 @@ import java.util.Arrays;
  * ******************************
  */
 @Component
-@ConditionalOnExpression("${example.service.enabled:true}")
-public class ServiceTest implements ApplicationRunner {
+@ConditionalOnExpression("${example.service.enabled-example-service:true}")
+public class StarterServiceTest implements ApplicationRunner {
 
     @Autowired
     private StarterService starterService;
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         System.out.println(Arrays.toString(starterService.split(",")));
     }
 }

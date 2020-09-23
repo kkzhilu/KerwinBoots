@@ -15,21 +15,31 @@ public class StarterServiceProperties {
 
     private String config;
 
-    private boolean enabled;
+    private boolean enabledExampleService;
 
-    public void setConfig(String config) {
-        this.config = config;
-    }
+    private boolean enabledTwoSumService;
 
     public String getConfig() {
         return config;
     }
 
-    public boolean isEnabled() {
-        return enabled;
+    public void setConfig(String config) {
+        this.config = config;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public boolean isEnabledExampleService() {
+        return enabledExampleService;
+    }
+
+    public void setEnabledExampleService(boolean enabledExampleService) {
+        this.enabledExampleService = enabledExampleService;
+    }
+
+    public boolean isEnabledTwoSumService() {
+        return enabledTwoSumService;
+    }
+
+    public void setEnabledTwoSumService(boolean enabledTwoSumService) {
+        this.enabledTwoSumService = enabledTwoSumService;
     }
 }

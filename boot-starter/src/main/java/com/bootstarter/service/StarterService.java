@@ -1,6 +1,5 @@
 package com.bootstarter.service;
 
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 /**
@@ -11,7 +10,6 @@ import org.springframework.util.StringUtils;
  * version:      V1.0
  * ******************************
  */
-@Component
 public class StarterService {
 
     public String[] split(String separatorChar) {

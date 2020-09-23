@@ -1,6 +1,7 @@
 package com.bootstarter;
 
 import com.bootstarter.service.StarterService;
+import com.bootstarter.service.TwoNumSumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,10 +31,17 @@ public class StarterAutoConfigure {
 
     @Bean
     @ConditionalOnMissingBean(StarterService.class)
-    @ConditionalOnProperty(prefix = "example.service", value = "enabled", havingValue = "true")
-    StarterService starterService (){
+    @ConditionalOnProperty(prefix = "example.service", value = "enabled-example-service", havingValue = "true")
+    StarterService starterService() {
         StarterService starterService = new StarterService();
         starterService.setConfig(properties.getConfig());
         return starterService;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(TwoNumSumService.class)
+    @ConditionalOnProperty(prefix = "example.service", value = "enabled-two-sum-service", havingValue = "true")
+    TwoNumSumService twoNumSumService() {
+        return new TwoNumSumService();
     }
 }
