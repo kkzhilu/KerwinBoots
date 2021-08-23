@@ -7,4 +7,5 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = KerwinBootsApplication.class)
 public abstract class ApplicationTests {
+
 }
